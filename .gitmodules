@@ -1,0 +1,6 @@
+[submodule "Sources/pexhx"]
+	path = Sources/pexhx
+	url = git@github.com:iskolbin/pexhx.git
+[submodule "pexhx"]
+	path = pexhx
+	url = git@github.com:iskolbin/pexhx.git
