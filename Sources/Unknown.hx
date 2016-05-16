@@ -19,7 +19,7 @@ class Unknown {
 	public function new() {
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
-		pexEmitter = PexXmlLoader.loadCompileTime( "/home/ilya/dev/khaparticles/Resources/particle.pex" );
+		pexEmitter = PexXmlLoader.loadCompileTime( "../Resources/particle.pex" );
 		Assets.loadEverything( init ); //loadImage( "particle", init );
 		backbuffer = Image.createRenderTarget( 800, 600 );
 	}
