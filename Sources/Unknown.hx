@@ -6,6 +6,9 @@ import kha.System;
 import kha.Image;
 import kha.Assets;
 import kha.Scaler;
+import kha.graphics4.PipelineState;
+import kha.graphics4.VertexStructure;
+import kha.Shaders;
 
 import pex.PexEmitter;
 import pex.PexXmlLoader;
@@ -22,6 +25,18 @@ class Unknown {
 		pexEmitter = PexXmlLoader.loadCompileTime( "../Resources/particle.pex" );
 		Assets.loadEverything( init ); //loadImage( "particle", init );
 		backbuffer = Image.createRenderTarget( 800, 600 );
+		
+		var pipe = new PipelineState();
+		pipe.blendDestination = BlendOne;
+		pipe.blendSource = SourceAlpha;
+		pipe.fragmentShader = Shaders.painter_image_frag;
+		pipe.vertexShader = Shaders.painter_image_vert;
+		var structure = new VertexStructure();
+		pipe.inputLayout = [structure];
+		pipe.compile();	
+
+		backbuffer.g2.pipeline = pipe;
+		backbuffer.g2.imageScaleQuality = High;
 	}
 
 	public function init() {
@@ -37,23 +52,12 @@ class Unknown {
 	function render(framebuffer: Framebuffer): Void {		
 		if ( inited ) {
 			var g2 = backbuffer.g2;
-			g2.begin();
-			//trace(g2.pipeline);
-			//g2.pipeline.blendSource = SourceAlpha;
-			//g2.pipeline.blendDestination = BlendOne;
+			g2.begin(true);
 			var idx = pexEmitter.getShiftedIndex(0);
 			for ( i in 0...pexEmitter.particleCount ) {
-			//g2.setBlendingMode( SourceAlpha, BlendOne );
-				g2.color = pexEmitter.getARGB(idx);
-				//trace( pexEmitter.getRed(idx), pexEmitter.getGreen(idx), pexEmitter.getBlue(idx), pexEmitter.getAlpha(idx));
+			g2.color = pexEmitter.getARGB(idx);
 				var size = pexEmitter.getSize(idx);
-			//	g2.pushOpacity( pexEmitter.getAlpha(idx));
-				//g2.pushRotation( pexEmitter.getRotation(idx), size/2, size/2 );
-				//g2.drawImage( particleTexture, 300+pexEmitter.getX(idx), 300+pexEmitter.getY(idx));
-				//trace( pexEmitter.getX(idx), pexEmitter.getY(idx), size, size );
 				g2.drawScaledImage( particleTexture, pexEmitter.getX(idx)-0.5*size, pexEmitter.getY(idx)-0.5*size, size, size );
-				//g2.popTransformation();
-				//g2.popOpacity();
 				idx = pexEmitter.incrementShiftedIndex(idx);
 			}
 			g2.end();
